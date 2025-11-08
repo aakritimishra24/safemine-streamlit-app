@@ -8,7 +8,7 @@ st.title("⛏️ SafeMine Rockfall Risk Predictor")
 model, encoder = joblib.load("rockfall_risk_model.pkl")
 
 # Input fields for app users
-ore_grade = st.number_input("Ore Grade (%)", min_value=0.0, max_value=10.0, value=2.5)
+ore_grade = st.number_input("Ore Grade (%)", min_value=0.0, max_value=10.0,value=2.5)
 tonnage = st.number_input("Tonnage", min_value=0.0, value=1000.0)
 ore_value = st.number_input("Ore Value (¥/tonne)", min_value=0.0, value=4000.0)
 mining_cost = st.number_input("Mining Cost (¥)", min_value=0.0, value=1200.0)
