@@ -77,3 +77,15 @@ if st.button("Predict Risk"):
     ax.grid(True)
 
     st.pyplot(fig)
+    # Show prediction
+st.markdown(f"### 📊 Predicted Rockfall Risk: **{prediction}**")
+
+# Alert system
+THRESHOLD = 0.5  # You can change this
+
+if prediction >= THRESHOLD:
+    st.error("🚨 ALERT: HIGH ROCKFALL RISK DETECTED!")
+    st.write("🔴 Please take immediate safety measures.")
+else:
+    st.success("🟢 SAFE: Rockfall risk is low.")
+
