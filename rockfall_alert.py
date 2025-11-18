@@ -30,7 +30,7 @@ else:
 
 # Manual Input Testing
 st.header("Manual Test")
-prediction_value = st.number_input("Enter a rockfall prediction value (0-1):", 0.0, 1.0, 0.0)
+prediction_value = st.number_input("Enter a rockfall prediction value (0-1):", 0.0, 0.0, 0.0)
 threshold_manual = 0.5
 
 if prediction_value >= threshold_manual:
