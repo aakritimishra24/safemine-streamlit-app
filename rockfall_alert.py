@@ -14,7 +14,7 @@ if uploaded_file:
 
     # Assuming your CSV has a column named 'prediction'
     if 'prediction' in df.columns:
-        threshold = st.slider("Set Rockfall Risk Threshold", 0.0, 1.0, 0.5)
+        threshold = st.slider("Set Rockfall Risk Threshold", 0.0, 0.5)
         df['alert'] = df['prediction'] >= threshold
         st.write("Alert Status:")
         st.dataframe(df[['prediction', 'alert']])
