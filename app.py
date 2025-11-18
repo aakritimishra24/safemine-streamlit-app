@@ -10,14 +10,13 @@ st.title("⛏️ SafeMine Rockfall Risk Predictor")
 # Load your trained model
 # -------------------------
 try:
-    # Load only the model (do not unpack)
-    model = joblib.load("rockfall_risk_model.pkl")  # ensure this file is in your repo
+    model = joblib.load("rockfall_risk_model.pkl")
 except FileNotFoundError:
     st.error("Model file 'rockfall_risk_model.pkl' not found. Upload it to your GitHub repo.")
     st.stop()
 
 # -------------------------
-# Input fields for app users
+# Input fields
 # -------------------------
 ore_grade = st.number_input("Ore Grade (%)", min_value=0.0, max_value=10.0, value=2.5)
 tonnage = st.number_input("Tonnage", min_value=0.0, value=1000.0)
@@ -27,9 +26,10 @@ processing_cost = st.number_input("Processing Cost (¥)", min_value=0.0, value=8
 profit = st.number_input("Profit (¥)", min_value=0.0, value=2500000.0)
 
 # -------------------------
-# Prediction
+# Predict button
 # -------------------------
 if st.button("Predict Risk"):
+
     input_df = pd.DataFrame([{
         "Ore_Grade (%)": ore_grade,
         "Tonnage": tonnage,
@@ -41,13 +41,28 @@ if st.button("Predict Risk"):
 
     try:
         prediction = model.predict(input_df)[0]
-        st.success(f"Predicted Rockfall Risk: {prediction}")
     except Exception as e:
         st.error(f"Error in prediction: {e}")
         st.stop()
 
     # -------------------------
-    # Graph: Rockfall Risk vs Ore Grade
+    # Display prediction
+    # -------------------------
+    st.markdown(f"### 📊 Predicted Rockfall Risk: **{prediction}**")
+
+    # -------------------------
+    # ALERT SYSTEM
+    # -------------------------
+    THRESHOLD = 0.5
+
+    if prediction >= THRESHOLD:
+        st.error("🚨 ALERT: HIGH ROCKFALL RISK DETECTED!")
+        st.write("🔴 Immediate safety precautions recommended.")
+    else:
+        st.success("🟢 SAFE: Rockfall risk is within safe limits.")
+
+    # -------------------------
+    # Risk Trend Graph
     # -------------------------
     st.subheader("📊 Rockfall Risk Trend with Ore Grade")
 
@@ -68,7 +83,6 @@ if st.button("Predict Risk"):
         st.error(f"Error generating graph: {e}")
         st.stop()
 
-    # Plot
     fig, ax = plt.subplots()
     ax.plot(ore_range, risk_values, marker="o", linestyle="-", color="orange")
     ax.set_xlabel("Ore Grade (%)")
@@ -77,11 +91,3 @@ if st.button("Predict Risk"):
     ax.grid(True)
 
     st.pyplot(fig)
-    st.markdown(f"### 📊 Predicted Rockfall Risk: **{risk_level}**")
-
-THRESHOLD = 0.5
-
-if risk_level >= THRESHOLD:
-    st.error("🚨 ALERT: HIGH ROCKFALL RISK DETECTED!")
-else:
-    st.success("🟢 SAFE: Rockfall risk is low.")
