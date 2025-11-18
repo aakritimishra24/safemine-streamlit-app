@@ -1,33 +1,39 @@
-import requests
-import time
+import streamlit as st
+import pandas as pd
 
-# URL to your raw JSON file on GitHub
-PREDICTION_URL = "https://raw.githubusercontent.com/<your-username>/<safemine-streamlit-app>/main/prediction.json"
+# Assuming prediction data is in a CSV on GitHub, or enter manually
+st.title("🪨 Rockfall Risk Prediction Alert")
 
-# Threshold for Rockfall Prediction alert
-THRESHOLD = 0.75
+# Load existing data from a CSV file (Optional)
+uploaded_file = st.file_uploader("Upload Prediction CSV", type=["csv"])
 
-def get_prediction():
-    response = requests.get(PREDICTION_URL)
-    if response.status_code == 200:
-        data = response.json()
-        return data.get("prediction", 0)
-    else:
-        print("Error fetching prediction. Status code:", response.status_code)
-        return None
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    st.write("Uploaded Prediction Data:")
+    st.dataframe(df)
 
-def alert_system():
-    prediction = get_prediction()
-    if prediction is not None:
-        print(f"Current Prediction: {prediction}")
-        if prediction > THRESHOLD:
-            print("🚨 ALERT! Risk of Rockfall detected!")
-            # TODO: add hardware code here later (vibrator/LED control)
+    # Assuming your CSV has a column named 'prediction'
+    if 'prediction' in df.columns:
+        threshold = st.slider("Set Rockfall Risk Threshold", 0.0, 1.0, 0.5)
+        df['alert'] = df['prediction'] >= threshold
+        st.write("Alert Status:")
+        st.dataframe(df[['prediction', 'alert']])
+
+        # Visual alert
+        if df['alert'].any():
+            st.error("🚨 WARNING: Rockfall Risk Detected!")
+            st.write("👁️‍🗨️ Check your buzzer, LED, or vibrator for alert.")
         else:
-            print("Rockfall Risk is low/normal.")
+            st.success("✔️ No Rockfall Risk Detected")
+else:
+    st.info("Please upload a CSV with prediction data.")
 
-if __name__ == "__main__":
-    while True:
-        alert_system()
-        time.sleep(5)  # Check every 5 seconds
+# Manual Input Testing
+st.header("Manual Test")
+prediction_value = st.number_input("Enter a rockfall prediction value (0-1):", 0.0, 1.0, 0.0)
+threshold_manual = 0.5
 
+if prediction_value >= threshold_manual:
+    st.error("🚨 ALERT: Rockfall risk high!")
+else:
+    st.success("✔️ Safe")
