@@ -2,7 +2,7 @@ import requests
 import time
 
 # URL to your raw JSON file on GitHub
-PREDICTION_URL = "https://raw.githubusercontent.com/<your-username>/<your-repo>/main/prediction.json"
+PREDICTION_URL = "https://raw.githubusercontent.com/<your-username>/<safemine-streamlit-app>/main/prediction.json"
 
 # Threshold for Rockfall Prediction alert
 THRESHOLD = 0.75
